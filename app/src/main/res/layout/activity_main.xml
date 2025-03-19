@@ -5,8 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FFF8E1"
     android:padding="16dp"
     tools:context=".MainActivity">
+
+    <!-- Cabeçalho com nome do aplicativo -->
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Casa da Vovó"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:textColor="#6D4C41"
+        android:background="#FFCC80"
+        android:elevation="4dp" />
 
     <!-- Barra de pesquisa -->
     <LinearLayout

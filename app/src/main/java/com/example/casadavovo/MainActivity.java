@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText searchInput;
     private ImageButton searchButton;
 
-    private static final String API_URL = "http://10.0.2.2:5000/todos"; // Ajuste para emulador Android
+    private static final String API_URL = "http://10.0.2.2:5000/todos";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Classe Recipe dentro do mesmo arquivo
     public static class Recipe implements Serializable {
         private String id, nome, categoria, origem, imagemPath, ingredientes, instrucoes;
 
@@ -127,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
             this.instrucoes = instrucoes;
         }
 
-        public String getId() { return id; }
         public String getNome() { return nome; }
         public String getCategoria() { return categoria; }
         public String getOrigem() { return origem; }
@@ -136,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
         public String getInstrucoes() { return instrucoes; }
     }
 
-    // Adapter dentro do mesmo arquivo
     private class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
         private List<Recipe> recipes;
 
@@ -157,16 +154,40 @@ public class MainActivity extends AppCompatActivity {
             holder.name.setText(recipe.getNome());
             holder.category.setText(recipe.getCategoria());
             Glide.with(holder.imageView.getContext()).load(recipe.getImagemPath()).into(holder.imageView);
-/*
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle(recipe.getNome())
-                    .setMessage("Categoria: " + recipe.getCategoria() +
-                            "\nOrigem: " + recipe.getOrigem() +
-                            "\n\nIngredientes:\n" + recipe.getIngredientes() +
-                            "\n\nInstruções:\n" + recipe.getInstrucoes())
-                    .setPositiveButton("OK", null)
-                    .show();
-*/
+
+            holder.itemView.setOnClickListener(v -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_recipe_detail, null);
+                builder.setView(dialogView);
+
+                AlertDialog dialog = builder.create();
+
+                // Definir os elementos do layout
+                ImageView recipeImage = dialogView.findViewById(R.id.dialogRecipeImage);
+                TextView recipeTitle = dialogView.findViewById(R.id.dialogRecipeTitle);
+                TextView recipeCategory = dialogView.findViewById(R.id.dialogRecipeCategory);
+                TextView recipeOrigin = dialogView.findViewById(R.id.dialogRecipeOrigin);
+                TextView recipeIngredients = dialogView.findViewById(R.id.dialogRecipeIngredients);
+                TextView recipeInstructions = dialogView.findViewById(R.id.dialogRecipeInstructions);
+                Button closeButton = dialogView.findViewById(R.id.dialogCloseButton);
+
+                // Setando os dados
+                recipeTitle.setText(recipe.getNome());
+                recipeCategory.setText("Categoria: " + recipe.getCategoria());
+                recipeOrigin.setText("Origem: " + recipe.getOrigem());
+                recipeIngredients.setText("Ingredientes:\n" + recipe.getIngredientes());
+                recipeInstructions.setText("Instruções:\n" + recipe.getInstrucoes());
+
+                Glide.with(dialogView.getContext()).load(recipe.getImagemPath()).into(recipeImage);
+
+                // Botão de fechar
+                closeButton.setOnClickListener(view -> dialog.dismiss());
+
+                // Exibir o diálogo
+                dialog.show();
+            });
+
         }
 
         @Override
